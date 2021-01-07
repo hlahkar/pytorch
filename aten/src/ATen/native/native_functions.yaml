@@ -3845,6 +3845,7 @@
   use_c10_dispatcher: hacky_wrapper_for_legacy_signatures
   dispatch:
     CPU, CUDA: trunc_out
+    SparseCPU, SparseCUDA: trunc_out_sparse
 
 # Alias for trunc
 - func: fix(Tensor self) -> Tensor

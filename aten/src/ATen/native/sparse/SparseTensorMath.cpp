@@ -167,6 +167,29 @@ SparseTensor& asin_sparse_(SparseTensor& t) {
 }
 
 // --------------------------------------------------------------------
+// trunc(SparseTensor)
+// --------------------------------------------------------------------
+
+SparseTensor& trunc_out_sparse(SparseTensor& result, const SparseTensor& self) {
+  // Note: this is consistent with NumPy
+  TORCH_CHECK(!self.is_complex(), "trunc is not supported for complex inputs");
+
+  AT_ASSERT(result.is_sparse());
+
+  if (is_same_tensor(result, self)) {
+    // don't have in-place asin for uncoalesced input because coalesce() is not
+    // in-place, see above comment
+    TORCH_CHECK(
+        result.is_coalesced(),
+        "asin: in-place on uncoalesced tensors is not supported");
+  } else {
+    copy_sparse_to_sparse_(result, self.coalesce());
+  }
+  result._values().trunc_();
+  return result;
+}
+
+// --------------------------------------------------------------------
 // pow(SparseTensor, Scalar)
 // --------------------------------------------------------------------
 
